@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.awareframework.android.sensor.processor">
+
+    <application>
+        <service
+            android:name=".ProcessorService"
+            android:exported="true" />
+    </application>
+</manifest>

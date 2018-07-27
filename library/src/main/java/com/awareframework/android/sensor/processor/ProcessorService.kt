@@ -1,7 +1,9 @@
 package com.awareframework.android.sensor.processor
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -23,6 +25,13 @@ class ProcessorService : AwareSensor() {
 
     companion object {
         const val TAG = "AwareProcessorService"
+
+        const val ACTION_AWARE_PROCESSOR_START = "com.awareframework.android.sensor.processor.ACTION_AWARE_PROCESSOR_START"
+        const val ACTION_AWARE_PROCESSOR_STOP = "com.awareframework.android.sensor.processor.ACTION_AWARE_PROCESSOR_STOP"
+
+        const val ACTION_AWARE_PROCESSOR_SET_LABEL = "com.awareframework.android.sensor.processor.ACTION_AWARE_PROCESSOR_SET_LABEL"
+        const val ACTION_AWARE_PROCESSOR_SYNC = "com.awareframework.android.sensor.processor.ACTION_AWARE_PROCESSOR_SYNC"
+        const val EXTRA_LABEL = "label"
 
         /**
          * Broadcasted event: when there is new processor usage information
@@ -58,22 +67,22 @@ class ProcessorService : AwareSensor() {
     private val mRunnable: Runnable = Runnable {
         val processorNow = getProcessorLoad()
 
-        var user_percentage = 0f
-        var system_percentage = 0f
-        var idle_percentage = 0f
+        var userPercentage = 0f
+        var systemPercentage = 0f
+        var idlePercentage = 0f
 
         lastData?.let { oldLoad ->
             val delta = processorNow - oldLoad
             try {
                 val multiplier = 100.0f / (delta.user + delta.system + delta.idle).toFloat()
-                user_percentage = delta.user * multiplier
-                system_percentage = delta.system * multiplier
-                idle_percentage = delta.idle * multiplier
+                userPercentage = delta.user * multiplier
+                systemPercentage = delta.system * multiplier
+                idlePercentage = delta.idle * multiplier
             } catch (e: ArithmeticException) {
             }
         }
 
-        logd("USER: $user_percentage% IDLE: $idle_percentage% Total: ${user_percentage + system_percentage + idle_percentage}")
+        logd("USER: $userPercentage% IDLE: $idlePercentage% Total: ${userPercentage + systemPercentage + idlePercentage}")
 
         val data = ProcessorData().apply {
             timestamp = System.currentTimeMillis()
@@ -83,9 +92,9 @@ class ProcessorService : AwareSensor() {
             lastSystemTicks = processorNow.system
             lastIdleTicks = processorNow.idle
 
-            userLoad = user_percentage
-            systemLoad = system_percentage
-            idleLoad = idle_percentage
+            userLoad = userPercentage
+            systemLoad = systemPercentage
+            idleLoad = idlePercentage
         }
 
         dbEngine?.save(data, ProcessorData.TABLE_NAME)
@@ -94,17 +103,32 @@ class ProcessorService : AwareSensor() {
 
         sendBroadcast(Intent(ACTION_AWARE_PROCESSOR))
 
-        if (idle_percentage <= 10) {
+        if (idlePercentage <= 10) {
             sendBroadcast(Intent(ACTION_AWARE_PROCESSOR_STRESSED))
 
             CONFIG.sensorObserver?.onOverloaded()
-        } else if (idle_percentage >= 90) {
+        } else if (idlePercentage >= 90) {
             sendBroadcast(Intent(ACTION_AWARE_PROCESSOR_RELAXED))
 
             CONFIG.sensorObserver?.onIdle()
         }
 
         schedule()
+    }
+
+    private val processorReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent ?: return
+            when (intent.action) {
+                ACTION_AWARE_PROCESSOR_SET_LABEL -> {
+                    intent.getStringExtra(EXTRA_LABEL)?.let {
+                        CONFIG.label = it
+                    }
+                }
+
+                ACTION_AWARE_PROCESSOR_SYNC -> onSync(intent)
+            }
+        }
     }
 
     private fun schedule() {
@@ -120,6 +144,11 @@ class ProcessorService : AwareSensor() {
                 .setHost(CONFIG.dbHost)
                 .setEncryptionKey(CONFIG.dbEncryptionKey)
                 .build()
+
+        registerReceiver(processorReceiver, IntentFilter().apply {
+            addAction(ACTION_AWARE_PROCESSOR_SET_LABEL)
+            addAction(ACTION_AWARE_PROCESSOR_SYNC)
+        })
 
         logd("Processor service created.")
     }
@@ -148,6 +177,8 @@ class ProcessorService : AwareSensor() {
         mHandler.removeCallbacks(mRunnable)
 
         dbEngine?.close()
+
+        unregisterReceiver(processorReceiver)
 
         logd("Processor service terminated...")
     }
@@ -186,7 +217,7 @@ class ProcessorService : AwareSensor() {
     }
 
     override fun onSync(intent: Intent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        dbEngine?.startSync(ProcessorData.TABLE_NAME)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -205,12 +236,9 @@ class ProcessorService : AwareSensor() {
     }
 
     /**
-     * Get processor load from /proc/stat and returns an hashmap with the values:
-     * [user]
-     * [system]
-     * [idle]
+     * Get processor load from /proc/stat and returns them in a ProcessorLoad.
      *
-     * @return [Map] with user, system and idle keys and values
+     * @return [ProcessorLoad] with user, system and idle keys and values
      */
     private fun getProcessorLoad(): ProcessorLoad {
         val load = ProcessorLoad()
@@ -231,6 +259,35 @@ class ProcessorService : AwareSensor() {
         }
 
         return load
+    }
+
+    class ProcessorServiceBroadcastReceiver : AwareSensor.SensorBroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            context ?: return
+
+            logd("Sensor broadcast received. action: " + intent?.action)
+
+            when (intent?.action) {
+                AwareSensor.SensorBroadcastReceiver.SENSOR_START_ENABLED -> {
+                    logd("Sensor enabled: " + CONFIG.enabled)
+
+                    if (CONFIG.enabled) {
+                        startService(context)
+                    }
+                }
+
+                ACTION_AWARE_PROCESSOR_STOP,
+                AwareSensor.SensorBroadcastReceiver.SENSOR_STOP_ALL -> {
+                    logd("Stopping sensor.")
+                    stopService(context)
+                }
+
+                ACTION_AWARE_PROCESSOR_START -> {
+                    startService(context)
+                }
+            }
+        }
     }
 }
 

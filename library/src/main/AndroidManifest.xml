@@ -5,5 +5,15 @@
         <service
             android:name=".ProcessorService"
             android:exported="true" />
+        <receiver
+            android:name=".ProcessorService$ProcessorServiceBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.aware.android.sensor.processor.SENSOR_START" />
+                <action android:name="com.aware.android.sensor.processor.SENSOR_STOP" />
+                <action android:name="com.aware.android.sensor.SENSOR_START" />
+                <action android:name="com.aware.android.sensor.SENSOR_STOP" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

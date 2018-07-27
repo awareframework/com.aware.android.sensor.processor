@@ -156,6 +156,7 @@ class ProcessorService : AwareSensor() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
+        // TODO https://issuetracker.google.com/issues/37140047 is it N or O?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             logd("Processor service is not allowed by Google, buuuu. Disabling sensor...")
 

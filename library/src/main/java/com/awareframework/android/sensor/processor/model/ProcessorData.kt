@@ -4,7 +4,7 @@ import com.awareframework.android.core.model.AwareObject
 import com.google.gson.Gson
 
 /**
- * Class decription
+ * Contains the CPU load data.
  *
  * @author  sercant
  * @date 25/07/2018

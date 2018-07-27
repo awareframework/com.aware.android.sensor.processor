@@ -21,10 +21,10 @@ import java.io.*
  * @author  sercant
  * @date 25/07/2018
  */
-class ProcessorService : AwareSensor() {
+class ProcessorSensor : AwareSensor() {
 
     companion object {
-        const val TAG = "AwareProcessorService"
+        const val TAG = "AwareProcessorSensor"
 
         const val ACTION_AWARE_PROCESSOR_START = "com.awareframework.android.sensor.processor.ACTION_AWARE_PROCESSOR_START"
         const val ACTION_AWARE_PROCESSOR_STOP = "com.awareframework.android.sensor.processor.ACTION_AWARE_PROCESSOR_STOP"
@@ -51,11 +51,11 @@ class ProcessorService : AwareSensor() {
         fun startService(context: Context, config: ProcessorConfig? = null) {
             if (config != null)
                 CONFIG.replaceWith(config)
-            context.startService(Intent(context, ProcessorService::class.java))
+            context.startService(Intent(context, ProcessorSensor::class.java))
         }
 
         fun stopService(context: Context) {
-            context.stopService(Intent(context, ProcessorService::class.java))
+            context.stopService(Intent(context, ProcessorSensor::class.java))
         }
 
         val CONFIG = ProcessorConfig()
@@ -213,6 +213,7 @@ class ProcessorService : AwareSensor() {
 
             if (config is ProcessorConfig) {
                 sensorObserver = config.sensorObserver
+                frequency = config.frequency
             }
         }
     }
@@ -262,7 +263,7 @@ class ProcessorService : AwareSensor() {
         return load
     }
 
-    class ProcessorServiceBroadcastReceiver : AwareSensor.SensorBroadcastReceiver() {
+    class ProcessorSensorBroadcastReceiver : AwareSensor.SensorBroadcastReceiver() {
 
         override fun onReceive(context: Context?, intent: Intent?) {
             context ?: return
@@ -293,6 +294,6 @@ class ProcessorService : AwareSensor() {
 }
 
 private fun logd(text: String) {
-    if (ProcessorService.CONFIG.debug)
-        Log.d(ProcessorService.TAG, text)
+    if (ProcessorSensor.CONFIG.debug)
+        Log.d(ProcessorSensor.TAG, text)
 }

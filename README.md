@@ -8,7 +8,7 @@ The processor sensor measures the mobile phone’s processor load. It provides t
 
 ## Public functions
 
-### ProcessorService
+### ProcessorSensor
 
 + `startService(context: Context, config: ProcessorConfig?)`: Starts the processor sensor with the optional configuration.
 + `stopService(context: Context)`: Stops the service.
@@ -31,9 +31,9 @@ Class to hold the configuration of the sensor.
 
 ## Broadcasts
 
-+ `ProcessorService.ACTION_AWARE_PROCESSOR` when there is new processor usage information.
-+ `ProcessorService.ACTION_AWARE_PROCESSOR_STRESSED` fired when the processor idle is below 10%.
-+ `ProcessorService.ACTION_AWARE_PROCESSOR_RELAXED` fired when the processor idle is above 90%.
++ `ProcessorSensor.ACTION_AWARE_PROCESSOR` when there is new processor usage information.
++ `ProcessorSensor.ACTION_AWARE_PROCESSOR_STRESSED` fired when the processor idle is below 10%.
++ `ProcessorSensor.ACTION_AWARE_PROCESSOR_RELAXED` fired when the processor idle is above 90%.
 
 ## Data Representations
 
@@ -60,8 +60,8 @@ Contains the CPU load data.
 
 ```kotlin
 // To start the service.
-ProcessorService.startService(appContext, ProcessorService.ProcessorConfig().apply {
-    sensorObserver = object :ProcessorService.ProcessorObserver {
+ProcessorSensor.startService(appContext, ProcessorSensor.ProcessorConfig().apply {
+    sensorObserver = object :ProcessorSensor.ProcessorObserver {
         override fun onOverloaded() {
             // your code here...
         }
@@ -80,7 +80,7 @@ ProcessorService.startService(appContext, ProcessorService.ProcessorConfig().app
 })
 
 // To stop the service
-ProcessorService.stopService(appContext)
+ProcessorSensor.stopService(appContext)
 ```
 
 ## License

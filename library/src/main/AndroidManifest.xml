@@ -3,10 +3,10 @@
 
     <application>
         <service
-            android:name=".ProcessorService"
+            android:name=".ProcessorSensor"
             android:exported="true" />
         <receiver
-            android:name=".ProcessorService$ProcessorServiceBroadcastReceiver"
+            android:name=".ProcessorSensor$ProcessorSensorBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.aware.android.sensor.processor.SENSOR_START" />

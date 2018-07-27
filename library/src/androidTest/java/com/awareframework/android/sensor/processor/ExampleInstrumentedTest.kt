@@ -21,8 +21,8 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getTargetContext()
         assertEquals("com.aware.android.sensor.processor.test", appContext.packageName)
 
-        ProcessorService.startService(appContext, ProcessorService.ProcessorConfig().apply {
-            sensorObserver = object :ProcessorService.ProcessorObserver {
+        ProcessorSensor.startService(appContext, ProcessorSensor.ProcessorConfig().apply {
+            sensorObserver = object :ProcessorSensor.ProcessorObserver {
                 override fun onOverloaded() {
                     // your code here...
                 }

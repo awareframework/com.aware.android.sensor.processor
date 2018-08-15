@@ -184,7 +184,7 @@ class ProcessorSensor : AwareSensor() {
         logd("Processor service terminated...")
     }
 
-    interface ProcessorObserver {
+    interface SensorObserver {
         /**
          * CPU load is >=90%
          */
@@ -204,7 +204,7 @@ class ProcessorSensor : AwareSensor() {
     }
 
     data class ProcessorConfig(
-            var sensorObserver: ProcessorObserver? = null,
+            var sensorObserver: SensorObserver? = null,
             var frequency: Int = 10
     ) : SensorConfig(dbPath = "aware_processor") {
 

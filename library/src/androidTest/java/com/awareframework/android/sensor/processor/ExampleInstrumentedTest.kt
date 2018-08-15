@@ -22,7 +22,7 @@ class ExampleInstrumentedTest {
         assertEquals("com.aware.android.sensor.processor.test", appContext.packageName)
 
         ProcessorSensor.startService(appContext, ProcessorSensor.ProcessorConfig().apply {
-            sensorObserver = object :ProcessorSensor.ProcessorObserver {
+            sensorObserver = object :ProcessorSensor.SensorObserver {
                 override fun onOverloaded() {
                     // your code here...
                 }

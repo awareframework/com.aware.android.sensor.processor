@@ -24,7 +24,7 @@ import java.io.*
 class ProcessorSensor : AwareSensor() {
 
     companion object {
-        const val TAG = "AwareProcessorSensor"
+        const val TAG = "Aware::Processor"
 
         const val ACTION_AWARE_PROCESSOR_START = "com.awareframework.android.sensor.processor.ACTION_AWARE_PROCESSOR_START"
         const val ACTION_AWARE_PROCESSOR_STOP = "com.awareframework.android.sensor.processor.ACTION_AWARE_PROCESSOR_STOP"

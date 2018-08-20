@@ -42,18 +42,19 @@ Class to hold the configuration of the sensor.
 
 Contains the CPU load data.
 
-| Field           | Type   | Description                                             |
-| --------------- | ------ | ------------------------------------------------------- |
-| lastUserTicks   | Int    | last user CPU ticks                                     |
-| lastSystemTicks | Int    | last system CPU ticks                                   |
-| lastIdleTicks   | Int    | last idle CPU ticks                                     |
-| userLoad        | Float  | percentage of CPU load dedicated to user’s processes   |
-| systemLoad      | Float  | percentage of CPU load dedicated to system’s processes |
-| idleLoad        | Float  | percentage of idle CPU load                             |
-| deviceId        | String | AWARE device UUID                                       |
-| timestamp       | Long   | unixtime milliseconds since 1970                        |
-| timezone        | Int    | [Raw timezone offset][1] of the device                  |
-| os              | String | Operating system of the device (ex. android)            |
+| Field           | Type   | Description                                                     |
+| --------------- | ------ | --------------------------------------------------------------- |
+| lastUserTicks   | Int    | last user CPU ticks                                             |
+| lastSystemTicks | Int    | last system CPU ticks                                           |
+| lastIdleTicks   | Int    | last idle CPU ticks                                             |
+| userLoad        | Float  | percentage of CPU load dedicated to user’s processes           |
+| systemLoad      | Float  | percentage of CPU load dedicated to system’s processes         |
+| idleLoad        | Float  | percentage of idle CPU load                                     |
+| deviceId        | String | AWARE device UUID                                               |
+| label           | String | Customizable label. Useful for data calibration or traceability |
+| timestamp       | Long   | unixtime milliseconds since 1970                                |
+| timezone        | Int    | [Raw timezone offset][1] of the device                          |
+| os              | String | Operating system of the device (ex. android)                    |
 
 [1]: https://developer.android.com/reference/java/util/TimeZone#getRawOffset()
 

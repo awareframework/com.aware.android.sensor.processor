@@ -48,17 +48,17 @@ class ProcessorSensor : AwareSensor() {
          */
         const val ACTION_AWARE_PROCESSOR_RELAXED = "ACTION_AWARE_PROCESSOR_RELAXED"
 
-        fun startService(context: Context, config: ProcessorConfig? = null) {
+        fun start(context: Context, config: Config? = null) {
             if (config != null)
                 CONFIG.replaceWith(config)
             context.startService(Intent(context, ProcessorSensor::class.java))
         }
 
-        fun stopService(context: Context) {
+        fun stop(context: Context) {
             context.stopService(Intent(context, ProcessorSensor::class.java))
         }
 
-        val CONFIG = ProcessorConfig()
+        val CONFIG = Config()
     }
 
     private var lastData: ProcessorLoad? = null
@@ -184,7 +184,7 @@ class ProcessorSensor : AwareSensor() {
         logd("Processor service terminated...")
     }
 
-    interface SensorObserver {
+    interface Observer {
         /**
          * CPU load is >=90%
          */
@@ -203,15 +203,15 @@ class ProcessorSensor : AwareSensor() {
         fun onChanged(data: ProcessorData)
     }
 
-    data class ProcessorConfig(
-            var sensorObserver: SensorObserver? = null,
+    data class Config(
+            var sensorObserver: Observer? = null,
             var frequency: Int = 10
     ) : SensorConfig(dbPath = "aware_processor") {
 
         override fun <T : SensorConfig> replaceWith(config: T) {
             super.replaceWith(config)
 
-            if (config is ProcessorConfig) {
+            if (config is Config) {
                 sensorObserver = config.sensorObserver
                 frequency = config.frequency
             }
@@ -275,18 +275,18 @@ class ProcessorSensor : AwareSensor() {
                     logd("Sensor enabled: " + CONFIG.enabled)
 
                     if (CONFIG.enabled) {
-                        startService(context)
+                        start(context)
                     }
                 }
 
                 ACTION_AWARE_PROCESSOR_STOP,
                 AwareSensor.SensorBroadcastReceiver.SENSOR_STOP_ALL -> {
                     logd("Stopping sensor.")
-                    stopService(context)
+                    stop(context)
                 }
 
                 ACTION_AWARE_PROCESSOR_START -> {
-                    startService(context)
+                    start(context)
                 }
             }
         }

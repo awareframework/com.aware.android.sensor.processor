@@ -10,24 +10,25 @@ The processor sensor measures the mobile phone’s processor load. It provides t
 
 ### ProcessorSensor
 
-+ `startService(context: Context, config: ProcessorConfig?)`: Starts the processor sensor with the optional configuration.
-+ `stopService(context: Context)`: Stops the service.
++ `start(context: Context, config: ProcessorSensor.Config?)`: Starts the processor sensor with the optional configuration.
++ `stop(context: Context)`: Stops the service.
 
-### ProcessorConfig
+### ProcessorSensor.Config
 
 Class to hold the configuration of the sensor.
 
 #### Fields
 
-+ `debug: Boolean`: enable/disable logging to `Logcat`. (default = false)
-+ `host: String`: Host for syncing the database. (default = null)
-+ `key: String`: Encryption key for the database. (default = no encryption)
-+ `host: String`: Host for syncing the database. (default = null)
-+ `type: EngineDatabaseType)`: Which db engine to use for saving data. (default = NONE)
-+ `path: String`: Path of the database.
-+ `deviceId: String`: Id of the device that will be associated with the events and the sensor. (default = "")
-+ `sensorObserver: ProcessorObserver`: Callback for live data updates.
++ `sensorObserver: ProcessorSensor.Observer`: Callback for live data updates.
 + `frequency: Int`: Frequency of the data querying in seconds. (default = 10)
++ `enabled: Boolean` Sensor is enabled or not. (default = false)
++ `debug: Boolean` enable/disable logging to `Logcat`. (default = false)
++ `label: String` Label for the data. (default = "")
++ `deviceId: String` Id of the device that will be associated with the events and the sensor. (default = "")
++ `dbEncryptionKey` Encryption key for the database. (default =String? = null)
++ `dbType: Engine` Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
++ `dbPath: String` Path of the database. (default = "aware_wifi")
++ `dbHost: String` Host for syncing the database. (Defult = `null`)
 
 ## Broadcasts
 
@@ -60,8 +61,8 @@ Contains the CPU load data.
 
 ```kotlin
 // To start the service.
-ProcessorSensor.startService(appContext, ProcessorSensor.ProcessorConfig().apply {
-    sensorObserver = object :ProcessorSensor.ProcessorObserver {
+ProcessorSensor.start(appContext, ProcessorSensor.Config().apply {
+    sensorObserver = object :ProcessorSensor.Observer {
         override fun onOverloaded() {
             // your code here...
         }
@@ -80,7 +81,7 @@ ProcessorSensor.startService(appContext, ProcessorSensor.ProcessorConfig().apply
 })
 
 // To stop the service
-ProcessorSensor.stopService(appContext)
+ProcessorSensor.stop(appContext)
 ```
 
 ## License

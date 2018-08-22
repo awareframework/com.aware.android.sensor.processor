@@ -27,7 +27,7 @@ Class to hold the configuration of the sensor.
 + `deviceId: String` Id of the device that will be associated with the events and the sensor. (default = "")
 + `dbEncryptionKey` Encryption key for the database. (default =String? = null)
 + `dbType: Engine` Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
-+ `dbPath: String` Path of the database. (default = "aware_wifi")
++ `dbPath: String` Path of the database. (default = "aware_processor")
 + `dbHost: String` Host for syncing the database. (Defult = `null`)
 
 ## Broadcasts

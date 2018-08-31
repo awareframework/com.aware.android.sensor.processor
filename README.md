@@ -21,14 +21,14 @@ Class to hold the configuration of the sensor.
 
 + `sensorObserver: ProcessorSensor.Observer`: Callback for live data updates.
 + `frequency: Int`: Frequency of the data querying in seconds. (default = 10)
-+ `enabled: Boolean` Sensor is enabled or not. (default = false)
-+ `debug: Boolean` enable/disable logging to `Logcat`. (default = false)
++ `enabled: Boolean` Sensor is enabled or not. (default = `false`)
++ `debug: Boolean` enable/disable logging to `Logcat`. (default = `false`)
 + `label: String` Label for the data. (default = "")
 + `deviceId: String` Id of the device that will be associated with the events and the sensor. (default = "")
-+ `dbEncryptionKey` Encryption key for the database. (default =String? = null)
++ `dbEncryptionKey` Encryption key for the database. (default = `null`)
 + `dbType: Engine` Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
 + `dbPath: String` Path of the database. (default = "aware_processor")
-+ `dbHost: String` Host for syncing the database. (Defult = `null`)
++ `dbHost: String` Host for syncing the database. (default = `null`)
 
 ## Broadcasts
 

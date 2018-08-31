@@ -85,8 +85,9 @@ class ProcessorSensor : AwareSensor() {
         logd("USER: $userPercentage% IDLE: $idlePercentage% Total: ${userPercentage + systemPercentage + idlePercentage}")
 
         val data = ProcessorData().apply {
-            timestamp = System.currentTimeMillis()
             deviceId = CONFIG.deviceId
+            label = CONFIG.label
+            timestamp = System.currentTimeMillis()
 
             lastUserTicks = processorNow.user
             lastSystemTicks = processorNow.system
